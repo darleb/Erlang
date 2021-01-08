@@ -30,11 +30,14 @@ get_product_data() ->
                   [ X || X <- mnesia:table(shop)]))
               end).
 
+product(Shop) ->
+    {Shop#shop.item, Shop#shop.id,Shop#shop.cost}.
+
 get_all(all) ->
     AF = fun() ->
             Query = qlc:q([X || X <- mnesia:table(shop)]),
             Results = qlc:e(Query),
-            lists:map(fun unwrap_person/1, Results)
+            lists:map(fun product/1, Results)
          end,
     mnesia:activity(sync_dirty, AF, [], mnesia_frag);
 
@@ -42,4 +45,4 @@ get_all(Frag) ->
     Read = fun(Key) -> mnesia:read(Frag, Key) end,
     Read_frag = fun(Key) -> mnesia:activity(sync_dirty, Read, [Key], mnesia_frag) end,
     Items = lists:concat([Read_frag(Key) || Key <- mnesia:dirty_all_keys(Frag)]),
-    lists:map(fun unwrap_person/1, Items).
+    lists:map(fun product/1, Items).
