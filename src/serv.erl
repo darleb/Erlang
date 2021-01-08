@@ -19,8 +19,8 @@ handle_call({get_product}, _From, _) ->
   Res = data:get_product_data(),
   {reply, Res};
 handle_call({get_all, Frag}, _From, _) ->
-    Results = data:get_all(Frag),
-    {reply, Results};
+  Res = data:get_all_data(Frag),
+  {reply, Res};
 handle_call({info, Info}, _From, _) ->
   Res = data:info_data(Info),
   {reply, Res}.
