@@ -37,6 +37,5 @@ get_all_data(all) ->
      mnesia:transaction(
               fun() ->
                   Query = qlc:q( [ X || X <- mnesia:table(shop)] ), 
-                  Res = qlc:e(Query),
-                  lists:map(fun product/1, Res)
+                  Res = qlc:e(Query)
               end).
