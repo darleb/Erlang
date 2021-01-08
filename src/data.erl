@@ -32,7 +32,7 @@ get_product_data() ->
 
 get_all(all) ->
     AF = fun() ->
-            Query = qlc:q([X || X <- mnesia:table(product)]),
+            Query = qlc:q([X || X <- mnesia:table(shop)]),
             Results = qlc:e(Query),
             lists:map(fun unwrap_person/1, Results)
          end,
