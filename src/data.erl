@@ -1,6 +1,6 @@
 -module(data).
 
--export([init_data/1, info_data/1, add_data/3, get_product_data/0, get_all/1]).
+-export([init_data/1, info_data/1, add_data/3, get_product_data/0, get_all_data/1]).
 
 -include_lib("stdlib/include/qlc.hrl").
 -record(shop, {item, id, quantity, cost}).
@@ -31,18 +31,12 @@ get_product_data() ->
               end).
 
 product(Shop) ->
-    {Shop#shop.item, Shop#shop.id,Shop#shop.cost}.
+    {Shop#shop.item, Shop#shop.id, Shop#shop.cost}.
 
-get_all(all) ->
-    AF = fun() ->
+get_all_data(all) ->
+    F = fun() ->
             Query = qlc:q([X || X <- mnesia:table(shop)]),
-            Results = qlc:e(Query),
-            lists:map(fun product/1, Results)
+            Res = qlc:e(Query),
+            lists:map(fun product/1, Res)
          end,
-    mnesia:activity(sync_dirty, AF, [], mnesia_frag);
-
-get_all(Frag) ->
-    Read = fun(Key) -> mnesia:read(Frag, Key) end,
-    Read_frag = fun(Key) -> mnesia:activity(sync_dirty, Read, [Key], mnesia_frag) end,
-    Items = lists:concat([Read_frag(Key) || Key <- mnesia:dirty_all_keys(Frag)]),
-    lists:map(fun product/1, Items).
+    mnesia:activity(sync_dirty, F, [], mnesia_frag).
