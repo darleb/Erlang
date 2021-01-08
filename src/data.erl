@@ -1,6 +1,6 @@
 -module(data).
 
--export([init_data/1, info_data/1, add_data/3, get_product_data/0]).
+-export([init_data/1, info_data/1, add_data/3, get_product_data/0, get_all/1]).
 
 -include_lib("stdlib/include/qlc.hrl").
 -record(shop, {item, id, quantity, cost}).
@@ -30,4 +30,8 @@ get_product_data() ->
                   [ X || X <- mnesia:table(shop)]))
               end).
 
-
+get_all(Frag) ->
+    Read = fun(Key) -> mnesia:read(Frag, Key) end,
+    Read_frag = fun(Key) -> mnesia:activity(sync_dirty, Read, [Key], mnesia_frag) end,
+    Items = lists:concat([Read_frag(Key) || Key <- mnesia:dirty_all_keys(Frag)]),
+    lists:map(fun unwrap_person/1, Items).
