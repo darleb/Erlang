@@ -30,9 +30,10 @@ get_product_data() ->
                   [ X || X <- mnesia:table(shop)]))
               end).
 
-get_all_data() ->
+get_all_data(all) ->
      mnesia:transaction(
-              fun() ->
+            F = fun() ->
                   Query = qlc:q( [ X || X <- mnesia:table(shop)] ), 
                   Res = qlc:e(Query)
-              end).
+              end),
+      mnesia:activity(sync_dirty, F, [all], mnesia_frag).
