@@ -3,7 +3,7 @@
 -export([init_data/1, info_data/1, add_data/3, get_product_data/0, get_all_data/1]).
 
 -include_lib("stdlib/include/qlc.hrl").
--record(shop, {item, id, quantity, cost}).
+-record(shop, {item, id, cost}).
 
 
 init_data(Nodes) ->
@@ -36,7 +36,7 @@ product(Shop) ->
 get_all_data(all) ->
      mnesia:transaction(
               fun() ->
-                 Res = qlc:e( qlc:q(
-                  [ X || X <- mnesia:table(shop)])),
+                  Query = qlc:q( [ X || X <- mnesia:table(shop)] ), 
+                  Res = qlc:e(Query),
                   lists:map(fun product/1, Res)
               end).
