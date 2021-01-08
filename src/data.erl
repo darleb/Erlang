@@ -34,9 +34,9 @@ product(Shop) ->
     {Shop#shop.item, Shop#shop.id, Shop#shop.cost}.
 
 get_all_data(all) ->
-    F = fun() ->
-            Query = qlc:q([X || X <- mnesia:table(shop)]),
-            Res = qlc:e(Query),
-            lists:map(fun product/1, Res)
-         end,
-    mnesia:activity(sync_dirty, F, [], mnesia_frag).
+     mnesia:transaction(
+              fun() ->
+                 Res = qlc:e( qlc:q(
+                  [ X || X <- mnesia:table(shop)])),
+                  lists:map(fun product/1, Res)
+              end).
