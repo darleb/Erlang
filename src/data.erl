@@ -40,4 +40,4 @@ get_all_data(all) ->
                   Res = qlc:e(Query),
                   lists:map(fun product/1, Res),
               end),
-      mnesia:activity(sync_dirty, F, [], mnesia_frag).
+      mnesia:activity(transaction, F, [], mnesia_frag).
