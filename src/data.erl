@@ -1,6 +1,6 @@
 -module(data).
 
--export([init_data/1, info_data/1, add_data/3, get_product_data/0, get_all_data/1]).
+-export([init_data/1, info_data/1, add_data/3, get_product_data/0, get_all_data/0]).
 
 -include_lib("stdlib/include/qlc.hrl").
 -record(shop, {item, id, cost}).
@@ -30,10 +30,7 @@ get_product_data() ->
                   [ X || X <- mnesia:table(shop)]))
               end).
 
-product(Shop) ->
-    {Shop#shop.item, Shop#shop.id, Shop#shop.cost}.
-
-get_all_data(all) ->
+get_all_data() ->
      mnesia:transaction(
               fun() ->
                   Query = qlc:q( [ X || X <- mnesia:table(shop)] ), 
