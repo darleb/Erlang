@@ -1,5 +1,5 @@
 -module(client).
--export([init_app/1, add_product/3, get_product/0, data_info/1]).
+-export([init_app/1, add_product/3, get_product/0, data_info/1, get_all/1]).
 
 
 init_app(Nodes) -> serv:start_link(Nodes).
@@ -15,4 +15,9 @@ get_product() ->
 data_info(Info) ->
     {reply, Response} = serv:handle_call({info, Info}, self(), null),
     io:fwrite("~p ~p ~n",[Info, Response]),
+    Response.
+
+get_all(Frag) ->
+    {reply, Response} = serv:handle_call({get_all, Frag}, self(), null),
+    io:fwrite("Elements from ~p: ~p~n", [Frag, length(Response)]),
     Response.
