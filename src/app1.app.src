@@ -1,5 +1,5 @@
 
-{application, my_app,
+{application, app1,
  [
   {description, "Client for Mnesia project on Erlang"},
   {vsn, "0.1.0"},
